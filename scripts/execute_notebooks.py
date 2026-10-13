@@ -1,11 +1,13 @@
 """Execute every notebook headlessly (smoke test), or strip their outputs.
 
-    python scripts/execute_notebooks.py               # run all, fail on the first error
+    python scripts/execute_notebooks.py               # run all, fail on the first error (nothing is written)
     python scripts/execute_notebooks.py 03 05         # run only notebooks whose name starts with these
-    python scripts/execute_notebooks.py --clear-only  # strip outputs in place (do this before committing)
+    python scripts/execute_notebooks.py --save        # run and write the outputs back into the notebooks
+    python scripts/execute_notebooks.py --clear-only  # strip outputs in place
 
-Executed notebooks are not saved, so the committed copies stay output-free and
-learners see results from *their* data.
+The committed notebooks carry outputs from whatever data was present when
+they were saved (synthetic unless data/raw/events.csv exists). Re-run with
+--save after `make data` to replace them with real RetailRocket results.
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("prefixes", nargs="*")
     p.add_argument("--clear-only", action="store_true")
+    p.add_argument("--save", action="store_true", help="write executed outputs back into each notebook")
     p.add_argument("--timeout", type=int, default=3600, help="per-cell timeout in seconds")
     args = p.parse_args()
 
@@ -48,7 +51,9 @@ def main() -> int:
         t0 = time.time()
         print(f"running {path.name} ...", end=" ", flush=True)
         NotebookClient(nb, timeout=args.timeout, kernel_name="python3", resources={"metadata": {"path": str(NB_DIR)}}).execute()
-        print(f"ok ({time.time() - t0:.0f}s)")
+        if args.save:
+            nbformat.write(nb, path)
+        print(f"ok ({time.time() - t0:.0f}s){' saved' if args.save else ''}")
     return 0
 
 

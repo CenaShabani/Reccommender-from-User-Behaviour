@@ -14,6 +14,8 @@ The project is written the way a Principal Data Scientist would mentor a team. E
 
 Work through the notebooks in order. Each one has learning objectives, theory (with the maths), code, a "Principal DS note" on real-world pitfalls, key takeaways and graded exercises.
 
+The notebooks are committed **with outputs**, so you can read every figure and table on GitHub. Those outputs come from the **synthetic** dataset: each notebook starts with a banner saying so. Run `make data && make notebooks-save` (or run them in Jupyter) to replace them with real RetailRocket results.
+
 | # | Notebook | You will learn |
 |---|---|---|
 | 00 | [Problem framing](notebooks/00_problem_framing.ipynb) | Explicit vs implicit feedback; offline → online metric hierarchy; scoping questions |
@@ -52,7 +54,7 @@ jupyter lab notebooks/
 ## Project layout
 
 ```
-├── notebooks/              # the learning path (committed without outputs)
+├── notebooks/              # the learning path (committed with outputs from synthetic data)
 ├── src/recsys/             # the reusable, tested package the notebooks import
 │   ├── config.py           # paths, event weights, seeds, defaults
 │   ├── data.py             # load RetailRocket; synthetic generator with the same schema

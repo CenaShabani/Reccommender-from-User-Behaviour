@@ -1,4 +1,4 @@
-.PHONY: setup data test benchmark benchmark-synthetic notebooks clean-notebooks
+.PHONY: setup data test benchmark benchmark-synthetic notebooks notebooks-save clean-notebooks
 
 PYTHON ?= python
 
@@ -17,8 +17,11 @@ benchmark:        ## fit and evaluate every model (real data if present)
 benchmark-synthetic:
 	$(PYTHON) scripts/run_benchmark.py --synthetic
 
-notebooks:        ## execute every notebook headlessly (smoke test; outputs are not saved)
+notebooks:        ## execute every notebook headlessly (smoke test; nothing is written)
 	$(PYTHON) scripts/execute_notebooks.py
 
-clean-notebooks:  ## strip outputs before committing
+notebooks-save:   ## execute every notebook and save the outputs into it (e.g. after `make data`)
+	$(PYTHON) scripts/execute_notebooks.py --save
+
+clean-notebooks:  ## optional: strip all outputs in place
 	$(PYTHON) scripts/execute_notebooks.py --clear-only
